@@ -14,17 +14,11 @@ class GameComponent {
 
   update() {
     // Intended to be overridden
-    //for(let i = 0; i<this.components.length; ++i) {
-    //  this.components[i].update(this.components[i]);
-    //}
   }
 
   render() {
     // Intended to be overridden
-    //for(let i = 0; i<this.components.length; ++i) {
-    //  this.components[i].render(this.components[i]);
-    //}
   }
-};
+}
 
 export { GameComponent };

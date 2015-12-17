@@ -39,7 +39,7 @@ class Html extends Component {
         <meta name="description" content={this.props.description} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="apple-touch-icon" href="apple-touch-icon.png" />
-        <style id="semantic" dangerouslySetInnerHTML={{ __html: require('../../../node_modules/semantic-ui-css/semantic.css') }}  />
+        <style id="semantic" dangerouslySetInnerHTML={{ __html: require('../../../node_modules/semantic-ui-css/semantic.css') }} />
         <style id="css" dangerouslySetInnerHTML={{ __html: this.props.css }} />
 
       </head>

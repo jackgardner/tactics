@@ -11,12 +11,6 @@ const chance = new Chance();
  */
 const registerComponent = {
   components: [],
-  unregisterComponent(id) {
-
-  },
-  toggleComponent (id) {
-
-  },
   registerComponent(component) {
     if (!(component instanceof GameComponent)) {
       throw Error('registerComponent called with an invalid component. Must be of type GameComponent');
@@ -26,20 +20,20 @@ const registerComponent = {
 
     component.attachEngine(engine);
 
-    if(!component.id) {
+    if (!component.id) {
       component.id = chance.hash({ length: 15 });
       console.log(`Added component with id ${component.id}`);
     }
 
     this.components.push(component);
-    if(!this.registered) {
+    if (!this.registered) {
       component.registered = true;
       component.initialise();
     }
     if (this.componentRegistrationCallback) {
-      this.componentRegistrationCallback({components: this.components.length});
+      this.componentRegistrationCallback({ components: this.components.length });
     }
-  }
+  },
 };
 
 export { registerComponent };
