@@ -1,4 +1,4 @@
-FROM dockerfile/nodejs
+FROM quay.io/chronojam/nodejs
 
 USER root
 ADD . /tactics
