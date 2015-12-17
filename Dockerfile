@@ -4,7 +4,8 @@ USER root
 ADD . /tactics
 WORKDIR /tactics
 
-#RUN gulp
 RUN npm install
 
-ENTRYPOINT ["npm", "start"]
+WORKDIR /tactics/build
+
+ENTRYPOINT ["node", "server.js"]
