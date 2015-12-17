@@ -1,6 +1,6 @@
 /*! React Starter Kit | MIT License | http://www.reactstarterkit.com/ */
 
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import s from './Game.scss';
 import Engine from '../../Engine'; // Move to NPM module?
 import { GameComponent } from '../../Engine/core/GameComponent';
@@ -14,18 +14,26 @@ class TestScreen extends GameComponent {
 
     this.generateBox = this.generateBox.bind(this);
     this.initialise = this.initialise.bind(this);
-    this.update =  this.update.bind(this);
+    this.update = this.update.bind(this);
   }
 
   initialise() {
-    this.generateBox({x:0, y:0, z:0},0x00ff00);
-    this.cube = this.generateBox({x:2, y:2, z:1}, 0xff0000);
+    this.generateBox({
+      x: 0,
+      y: 0,
+      z: 0,
+    }, 0x00ff00);
+    this.cube = this.generateBox({
+      x: 2,
+      y: 2,
+      z: 1,
+    }, 0xff0000);
     this.engine.camera.position.z = 5;
   }
   generateBox(position, color) {
-    const geometry = new three.BoxGeometry(1,1,1);
+    const geometry = new three.BoxGeometry(1, 1, 1);
     const material = new three.MeshBasicMaterial({ color });
-    const cube = new three.Mesh( geometry, material );
+    const cube = new three.Mesh(geometry, material);
 
     cube.position.copy(position);
     this.engine.scene.add(cube);
@@ -36,7 +44,6 @@ class TestScreen extends GameComponent {
     super.update();
 
     this.cube.rotation.x += 0.01;
-
   }
 }
 
@@ -48,23 +55,21 @@ class Game extends Component {
     this.state = { numOfComponents: 0 };
     this.updateDebugInfo = this.updateDebugInfo.bind(this);
   }
-
-  updateDebugInfo(message) {
-    this.setState({ numOfComponents: message.components });
-  }
   componentDidMount() {
-
     const engine = new Engine({
       domElement: document.getElementById('root'),
       renderOptions: {
         height: 480,
-        width: 640
-      }
+        width: 640,
+      },
     });
     engine.onComponentRegistered(this.updateDebugInfo);
     engine.registerComponent(new TestScreen());
   }
 
+  updateDebugInfo(message) {
+    this.setState({ numOfComponents: message.components });
+  }
 
   render() {
     return (

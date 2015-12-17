@@ -4,7 +4,7 @@ import React, { Component, PropTypes } from 'react';
 import s from './GamePage.scss';
 import withStyles from '../../decorators/withStyles';
 
-import Game from '../Game'
+import Game from '../Game';
 
 const title = 'Play';
 @withStyles(s)

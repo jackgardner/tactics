@@ -16,8 +16,6 @@ function getUrl(path) {
 const HttpClient = {
 
   get: path => new Promise((resolve, reject) => {
-
-    console.log (getUrl(path));
     request
       .get(getUrl(path))
       .accept('application/json')
