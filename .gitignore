@@ -7,3 +7,4 @@ ncp-debug.log
 npm-debug.log
 semantic
 .idea
+.DS_Store
