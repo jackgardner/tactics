@@ -4,12 +4,8 @@ import * as registerComponent from '../decorators/registerComponent';
 @mixin(registerComponent)
 class GameComponent {
 
-  /**
-   * Not intended for public use. Calling registerComponent will take care of any attachment
-   * @param engine
-   */
-  attachEngine(engine) {
-    this.engine = engine;
+  initialise(callback) {
+
   }
 
   update() {

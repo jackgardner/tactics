@@ -4,46 +4,76 @@ import React, { Component } from 'react';
 import s from './Game.scss';
 import Engine from '../../Engine'; // Move to NPM module?
 import { GameComponent } from '../../Engine/core/GameComponent';
+import { GameScreen } from '../../Engine/core/GameScreen';
+import { Chance } from 'chance';
 
 import withStyles from '../../decorators/withStyles';
 import three from 'three';
 
-class TestScreen extends GameComponent {
-  constructor() {
+const chance = new Chance();
+
+class RotatingCube extends GameComponent {
+  constructor(position, colour) {
     super();
 
-    this.generateBox = this.generateBox.bind(this);
-    this.initialise = this.initialise.bind(this);
-    this.update = this.update.bind(this);
-  }
+    this.position = position;
+    this.colour = colour;
 
-  initialise() {
-    this.generateBox({
-      x: 0,
-      y: 0,
-      z: 0,
-    }, 0x00ff00);
-    this.cube = this.generateBox({
-      x: 2,
-      y: 2,
-      z: 1,
-    }, 0xff0000);
-    this.engine.camera.position.z = 5;
+    this.update = this.update.bind(this);
+    this.initialise = this.initialise.bind(this);
   }
-  generateBox(position, color) {
+  initialise(callback) {
+    super.initialise(callback);
+
     const geometry = new three.BoxGeometry(1, 1, 1);
-    const material = new three.MeshBasicMaterial({ color });
+    const material = new three.MeshBasicMaterial({ color: this.colour });
     const cube = new three.Mesh(geometry, material);
 
-    cube.position.copy(position);
-    this.engine.scene.add(cube);
+    cube.position.copy(this.position);
+    this.mesh = cube;
 
-    return cube;
+    if(typeof callback === 'function') {
+      callback(this.mesh);
+    }
   }
+
   update() {
     super.update();
 
-    this.cube.rotation.x += 0.01;
+    if (this.mesh) {
+      this.mesh.rotation.x += 0.01;
+    }
+  }
+}
+
+class TestScreen extends GameScreen {
+  constructor({ width, height }) {
+    super();
+    this.camera = new three.PerspectiveCamera(75, width / height, 0.1, 1000);
+    this.initialise = this.initialise.bind(this);
+    this.generateBox = this.generateBox.bind(this);
+
+    this.camera.position.z = 5;
+    this.generateBox({
+      x: chance.integer({min: -2, max: 2}),
+      y: chance.integer({min: -2, max: 2}),
+      z: chance.integer({min: -2, max: 2})
+    }, 0x00ff00);
+    this.generateBox({
+      x: chance.integer({ min: -2, max: 2 }),
+      y: chance.integer({ min: -2, max: 2 }),
+      z: chance.integer({ min: -2, max: 2 })
+    }, 0xff0000);
+  }
+
+  initialise() {
+  }
+  generateBox(position, color) {
+    const cube = new RotatingCube(position, color);
+    this.registerComponent(cube);
+  }
+  render(renderer) {
+    super.render(renderer);
   }
 }
 
@@ -64,7 +94,8 @@ class Game extends Component {
       },
     });
     engine.onComponentRegistered(this.updateDebugInfo);
-    engine.registerComponent(new TestScreen());
+    engine.addScreen(new TestScreen(engine.renderOptions));
+    engine.addScreen(new TestScreen(engine.renderOptions));
   }
 
   updateDebugInfo(message) {

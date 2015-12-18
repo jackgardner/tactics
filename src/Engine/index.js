@@ -1,8 +1,6 @@
 import three from 'three';
-import { mixin } from 'core-decorators';
-import * as registerComponent from './decorators/registerComponent';
+import { GameScreen } from './core/GameScreen';
 
-@mixin(registerComponent)
 class Engine {
   /**
    * Construct a new Engine with options
@@ -11,8 +9,10 @@ class Engine {
    */
   constructor({ domElement, renderOptions }) {
     this.screens = [];
-    this.scene = new three.Scene();
-    this.camera = new three.PerspectiveCamera(75, renderOptions.width / renderOptions.height, 0.1, 1000);
+    this.renderOptions = renderOptions;
+
+    // TODO Surely camera and scene should be controlled by the screen, not the engine?
+
 
     this.renderer = new three.WebGLRenderer();
     this.renderer.setSize(renderOptions.width, renderOptions.height);
@@ -22,6 +22,8 @@ class Engine {
   }
 
   addScreen(screen) {
+    if(!(screen instanceof GameScreen)) { throw new Error('Type @screen must be of GameScreen'); }
+    screen.engine = this;
     this.screens.push(screen);
   }
   /**
@@ -30,13 +32,16 @@ class Engine {
   run() {
     // Engine entities are structured in a tree, so it should be enough to ask any top level components
     // to do their updates here
-    for (let i = 0; i < this.components.length; ++i) {
-      this.components[i].update.apply(this.components[i]);
-    }
+    this.renderer.autoClear = false;
 
     // Request another run on the next animation frame
     requestAnimationFrame(this.run.bind(this));
-    this.renderer.render(this.scene, this.camera);
+    this.renderer.clear();
+    for (let i = 0; i < this.screens.length; ++i) {
+      this.screens[i].update.apply(this.screens[i]);
+      this.renderer.clearDepth();
+      this.screens[i].render.call(this.screens[i], this.renderer);
+    }
   }
 
   onComponentRegistered(callback) {

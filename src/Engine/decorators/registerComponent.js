@@ -1,4 +1,5 @@
 import { GameComponent } from '../core/GameComponent';
+import { GameScreen } from '../core/GameScreen';
 import { Chance } from 'chance';
 import Engine from '../';
 
@@ -15,11 +16,6 @@ const registerComponent = {
     if (!(component instanceof GameComponent)) {
       throw Error('registerComponent called with an invalid component. Must be of type GameComponent');
     }
-
-    const engine = (this instanceof Engine) ? this : this.engine;
-
-    component.attachEngine(engine);
-
     if (!component.id) {
       component.id = chance.hash({ length: 15 });
       console.log(`Added component with id ${component.id}`);
@@ -28,12 +24,16 @@ const registerComponent = {
     this.components.push(component);
     if (!this.registered) {
       component.registered = true;
-      component.initialise();
+      component.initialise((mesh) => {
+        if (this instanceof GameScreen) {
+          this.scene.add(mesh);
+        }
+      });
     }
     if (this.componentRegistrationCallback) {
       this.componentRegistrationCallback({ components: this.components.length });
     }
-  },
+  }
 };
 
 export default registerComponent;
