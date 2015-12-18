@@ -36,4 +36,4 @@ const registerComponent = {
   },
 };
 
-export { registerComponent };
+export default registerComponent;

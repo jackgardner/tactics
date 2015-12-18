@@ -1,6 +1,6 @@
 import three from 'three';
 import { mixin } from 'core-decorators';
-import { registerComponent } from './decorators/registerComponent';
+import * as registerComponent from './decorators/registerComponent';
 
 @mixin(registerComponent)
 class Engine {
